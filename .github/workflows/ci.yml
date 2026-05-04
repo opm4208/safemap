@@ -25,7 +25,7 @@ jobs:
 
       # 의존성 설치
       - name: 의존성 설치
-        run: npm ci
+        run: npm install
 
       # 테스트 실행
       - name: 테스트 실행
