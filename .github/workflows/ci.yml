@@ -1,0 +1,42 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ─── 테스트 & 빌드 ───────────────────────────────────────────
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 코드 체크아웃
+      - name: 코드 체크아웃
+        uses: actions/checkout@v3
+
+      # Node.js 설정
+      - name: Node.js 설정
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+
+      # 의존성 설치
+      - name: 의존성 설치
+        run: npm ci
+
+      # 테스트 실행
+      - name: 테스트 실행
+        run: npm test -- --watchAll=false --passWithNoTests
+        env:
+          CI: true
+
+      # 빌드 확인
+      - name: 빌드
+        run: npm run build
+        env:
+          CI: false
+          REACT_APP_KAKAO_KEY: ${{ secrets.REACT_APP_KAKAO_KEY }}
+          REACT_APP_PUBLIC_DATA_KEY: ${{ secrets.REACT_APP_PUBLIC_DATA_KEY }}
